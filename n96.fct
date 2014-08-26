@@ -1,0 +1,5 @@
+main DSTACK_USAGE:0 DSTACK_LEVEL:0 FILE:"main.c" LINE:45
+lcd_draw_circle DSTACK_USAGE:15 DSTACK_LEVEL:15 FILE:"tftlcd_functions.h" LINE:618
+lcd_draw_line DSTACK_USAGE:20 DSTACK_LEVEL:35 FILE:"tftlcd_functions.h" LINE:530
+lcd_write_pixel DSTACK_USAGE:6 DSTACK_LEVEL:41 FILE:"tftlcd_functions.h" LINE:481
+lcd_write_wdr DSTACK_USAGE:2 DSTACK_LEVEL:43 FILE:"tftlcd_functions.h" LINE:232

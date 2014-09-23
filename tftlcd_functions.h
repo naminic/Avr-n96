@@ -20,6 +20,13 @@
 #define WR_LOW        LCD_CONTROLPORT_PORT.LCD_WR_PIN=LOW
 #define WR_HIGH       LCD_CONTROLPORT_PORT.LCD_WR_PIN=HIGH
 
+#define STR_H   PORTB.1=1;
+#define STR_L   PORTB.1=0;
+#define CP_H    PORTB.0=1;
+#define CP_L    PORTB.0=0;
+#define D_H     PORTB.2=1;
+#define D_L     PORTB.2=0;
+
 #define LCD_DATAPORT_INPUT          LCD_DATAPORT_MSB_DDR=0x00;LCD_DATAPORT_LSB_DDR=0x00
 #define LCD_DATAPORT_OUTPUT         LCD_DATAPORT_MSB_DDR=0xFF;LCD_DATAPORT_LSB_DDR=0xFF
 #define LCD_DATAPORT_CLEAR          LCD_DATAPORT_MSB_PORT=0x00;LCD_DATAPORT_LSB_PORT=0x00
@@ -211,6 +218,48 @@ flash unsigned char font8x16[97][16]=
 0x00,0x70,0xD8,0xD8,0x70,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00  // DEL
 };  
 
+void send_data(unsigned char datah,unsigned char datal)
+{
+  unsigned char mask=0x01;
+    
+   STR_L;
+   delay_us(1);
+   CP_H; 
+   
+   
+  while (mask) {
+    if (datah & mask) {
+    D_H;
+    } 
+    else {
+    D_L;
+    }
+    CP_L;  
+    delay_us(1);
+    CP_H;
+    mask <<= 1;
+    } 
+    
+    mask=0x01;
+    while (mask) {
+    if (datal & mask) {
+    D_H;
+    } 
+    else {
+    D_L;
+    }
+    CP_L;  
+    delay_us(1);
+    CP_H;
+    mask <<= 1;
+    }  
+    
+     STR_L;
+     delay_us(1);
+     STR_H;
+     delay_us(1);  
+}
+
 
 //-----------------------------------------------------------------------
 	// send a word data to the lcd
@@ -219,8 +268,9 @@ void lcd_write_index_register(char ins)
     {
     CS_LOW;
     RS_LOW;
-    LCD_DATAPORT_MSB_PORT=0x00; 
-    LCD_DATAPORT_LSB_PORT=ins;
+    //LCD_DATAPORT_MSB_PORT=0x00; 
+    //LCD_DATAPORT_LSB_PORT=ins; 
+    send_data((unsigned char)(ins>>8),(unsigned char)ins);
     WR_LOW; 
     WR_HIGH;
     CS_HIGH;        
@@ -233,8 +283,9 @@ void lcd_write_wdr(int data)
     { 
     CS_LOW;
     RS_HIGH;
-    LCD_DATAPORT_MSB_PORT=(data>>8); 
-    LCD_DATAPORT_LSB_PORT=data; 
+    //LCD_DATAPORT_MSB_PORT=(data>>8); 
+    //LCD_DATAPORT_LSB_PORT=data;   
+    send_data((unsigned char)(data>>8),(unsigned char)data);
     WR_LOW;
     WR_HIGH;
     CS_HIGH;           
